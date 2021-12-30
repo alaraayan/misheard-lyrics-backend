@@ -1,6 +1,5 @@
 import mongoose from 'mongoose'
 import uniqueValidator from 'mongoose-unique-validator'
-import mongooseHidden from 'mongoose-hidden'
 import bcrypt from 'bcrypt'
 
 const userSchema = new mongoose.Schema({
@@ -11,11 +10,32 @@ const userSchema = new mongoose.Schema({
   isAdmin: { type: Boolean, default: false },
 })
 
-userSchema.methods.validatePassword = function validatePassword(password) {
+userSchema
+  .virtual('passwordConfirmation')
+  .set(function(passwordConfirmation) {
+    this._passwordConfirmation = passwordConfirmation
+  })
+
+userSchema
+  .pre('validate', function(next) {
+    if (this.isModified('password') && this.password !== this._passwordConfirmation) {
+      this.invalidate('passwordConfirmation', 'does not match')
+    }
+    next()
+  })
+
+userSchema
+  .pre('save', function(next) {
+    if (this.isModified('password')) {
+      this.password = bcrypt.hashSync(this.password, bcrypt.genSaltSync())
+    }
+    next()
+  })
+
+userSchema.methods.validatePassword = function(password) {
   return bcrypt.compareSync(password, this.password)
 }
 
-userSchema.plugin(mongooseHidden({ defaultHidden: { password: true, email: true, _id: false, isAdmin: false, username: false } }))
 userSchema.plugin(uniqueValidator)
 
 export default mongoose.model('User', userSchema)

@@ -33,9 +33,6 @@ async function login(req, res, next) {
   try {
     
     const userToLogin = await User.findOne({ email: req.body.email })
-
-    console.log(userToLogin)
-
     if (!userToLogin) {
       throw new NotFound
     }
@@ -49,11 +46,10 @@ async function login(req, res, next) {
       secret,
       { expiresIn: '12h' }
     )
-    console.log('Success')
     res.status(202).json({ message: `Welcome Back ${userToLogin.username}`, token, isAdmin })
 
-  } catch (e) {
-    next(encodeURIComponent)
+  } catch (err) {
+    next(err)
   }
 }
 
