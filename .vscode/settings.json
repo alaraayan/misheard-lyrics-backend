@@ -1,0 +1,11 @@
+{
+  "workbench.colorCustomizations": {
+    "statusBar.background": "#44b4e0",
+    "titleBar.activeBackground": "#44b4e0",
+    "titleBar.inactiveBackground": "#44b4e0",
+    "statusBar.foreground": "#000",
+    "titleBar.inactiveForeground": "#000",
+    "titleBar.activeForeground": "#000",
+  },
+  "window.title": "MISHEARD LYRICS BACKEND"
+}
