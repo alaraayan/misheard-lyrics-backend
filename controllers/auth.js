@@ -1,7 +1,7 @@
 import User from '../models/user.js'
 import jwt from 'jsonwebtoken'
 import { secret } from '../config/environment.js'
-import { UsernameExists, EmailExists, PasswordsNotMatching, UserInfoMissing } from '../lib/errors.js'
+import { UsernameExists, EmailExists, PasswordsNotMatching, UserInfoMissing, NotFound, Unauthorized } from '../lib/errors.js'
 
 async function register(req, res, next) {
   try {
@@ -32,25 +32,25 @@ async function register(req, res, next) {
 async function login(req, res, next) {
   try {
     
-    const user = await User.findOne({ email: req.body.email })
+    const userToLogin = await User.findOne({ email: req.body.email })
 
-    console.log(user)
+    console.log(userToLogin)
 
-    if (!user) {
-      throw new Error
+    if (!userToLogin) {
+      throw new NotFound
     }
-    const isValidPassword = user.validatePassword(req.body.password)
+    const isValidPassword = userToLogin.validatePassword(req.body.password)
     if (!isValidPassword) {
-      throw new Error
+      throw new Unauthorized
     }
-    const isAdmin = user.isAdmin
+    const isAdmin = userToLogin.isAdmin
     const token = jwt.sign(
-      { userId: user._id },
+      { userId: userToLogin._id },
       secret,
       { expiresIn: '12h' }
     )
     console.log('Success')
-    res.status(202).json({ message: 'Login successful', token, isAdmin })
+    res.status(202).json({ message: `Welcome Back ${userToLogin.username}`, token, isAdmin })
 
   } catch (e) {
     next(encodeURIComponent)
