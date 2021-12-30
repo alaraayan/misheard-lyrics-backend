@@ -19,7 +19,7 @@ async function seedDatabase() {
       isAdmin: true,
     })
 
-    console.log('🤖 Admin user created')
+    console.log('🤓 Admin user created')
 
   } catch (err) {
     console.log('🤖 Something went wrong')
