@@ -38,4 +38,6 @@ userSchema.methods.validatePassword = function(password) {
 
 userSchema.plugin(uniqueValidator)
 
-export default mongoose.model('User', userSchema)
+const User = mongoose.model('User', userSchema)
+
+export default User
