@@ -31,6 +31,7 @@ router.route('/artists/:artistId')
   .delete(secureRoute, artists.remove)
   .put(secureRoute, artists.edit)
 
-
+router.route('/artists/:artistId/like')
+  .post(secureRoute, artists.like)
 
 export default router

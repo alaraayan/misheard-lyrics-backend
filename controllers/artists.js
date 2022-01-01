@@ -1,7 +1,7 @@
 import { AlreadyExists, NotFound, OnlyAdmins, Unauthorized } from '../lib/errors.js'
 import Artist from '../models/artist.js'
 
-
+//! LIST 
 //* GET ALL ARTISTS
 
 async function artistIndex(_req, res, next) {
@@ -13,6 +13,9 @@ async function artistIndex(_req, res, next) {
   }
 }
 
+//* GET ALL ARTISTS BY GENRE
+
+//!DETAIL
 //* ADD AN ARTIST
 
 async function addArtist(req, res, next) {
@@ -94,10 +97,31 @@ async function updateAnArtist(req, res, next) {
   }
 }
 
+//* LIKE AN ARTIST
+async function likeAnArtist(req, res, next) {
+  const { artistId } = req.params
+  const { currentUserId, currentUser } = req
+  try {
+    const artistToLike = await Artist.findById(artistId).populate('likedBy')
+    if (!artistToLike) throw new NotFound
+
+    if (artistToLike.likedBy.find(user => currentUserId.equals(user.id))) {
+      artistToLike.likedBy.remove(currentUserId)
+    } else {
+      artistToLike.likedBy.push(currentUser)
+    }
+    await artistToLike.save()
+    return res.status(202).json(artistToLike)
+  } catch (err) {
+    next(err)
+  }
+}
+
 export default {
   index: artistIndex,
   create: addArtist,
   show: getAnArtist,
   remove: removeAnArtist,
   edit: updateAnArtist,
+  like: likeAnArtist,
 }
