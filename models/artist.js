@@ -7,6 +7,7 @@ const imagesSchema = new mongoose.Schema({
 })
 
 const artistSchema = new mongoose.Schema({
+  name: { type: String, required: true },
   spotifyId: { type: String, required: true },
   spotifyLink: { type: String, required: true },  
   spotifyFollowers: { type: Number, required: true },
