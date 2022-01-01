@@ -29,6 +29,7 @@ router.route('/artists')
 router.route('/artists/:artistId')
   .get(artists.show)
   .delete(secureRoute, artists.remove)
+  .put(secureRoute, artists.edit)
 
 
 

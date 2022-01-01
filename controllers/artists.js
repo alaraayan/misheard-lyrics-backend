@@ -1,6 +1,6 @@
 import { AlreadyExists, NotFound, OnlyAdmins, Unauthorized } from '../lib/errors.js'
 import Artist from '../models/artist.js'
-// import { NotFound, Unauthorized, AlreadyExists } from '../lib/errors.js'
+
 
 //* GET ALL ARTISTS
 
@@ -59,12 +59,10 @@ async function getAnArtist(req, res, next) {
 //* DELETE AN ARTIST
 
 async function removeAnArtist(req, res, next) {
+  const { artistId } = req.params
+  const isAdmin = req.currentUser.isAdmin
   try {
-    const { artistId } = req.params
-
-    const isAdmin = req.currentUser.isAdmin
     if (!isAdmin) throw new OnlyAdmins
-    
 
     const artistToDelete = await Artist.findById(artistId)
     if (!artistToDelete) throw new NotFound
@@ -77,11 +75,29 @@ async function removeAnArtist(req, res, next) {
   }
 }
 
-//* DELETE AN ARTIST
+//* UPDATE AN ARTIST
+
+async function updateAnArtist(req, res, next) {
+  const { artistId } = req.params
+  const isAdmin = req.currentUser.isAdmin
+  try {
+    if (!isAdmin) throw new OnlyAdmins
+
+    const artistToUpdate = await Artist.findById(artistId)
+    if (!artistToUpdate) throw new NotFound
+    
+    Object.assign(artistToUpdate, req.body)
+    await artistToUpdate.save()
+    return res.status(201).json(artistToUpdate)
+  } catch (err) {
+    next(err)
+  }
+}
 
 export default {
   index: artistIndex,
   create: addArtist,
   show: getAnArtist,
   remove: removeAnArtist,
+  edit: updateAnArtist,
 }
