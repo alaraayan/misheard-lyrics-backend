@@ -28,7 +28,7 @@ router.route('/artists')
 //* Detail routes
 router.route('/artists/:artistId')
   .get(artists.show)
-  
+  .delete(secureRoute, artists.remove)
 
 
 
