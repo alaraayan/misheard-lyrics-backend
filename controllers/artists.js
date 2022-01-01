@@ -15,12 +15,21 @@ async function artistIndex(_req, res, next) {
 
 //* GET ALL ARTISTS BY GENRE
 
+async function showArtistsOfGenre(req, res, next) {
+  const { genre } = req.params
+  try {
+    const matchedArtists = await Artist.find({ 'genres': genre })
+    res.status(200).json(matchedArtists)
+  } catch (err) {
+    next(err)
+  }
+}
+
 //!DETAIL
 //* ADD AN ARTIST
 
 async function addArtist(req, res, next) {
   const { currentUserId, currentUser } = req
-  console.log(req.currentUser)
   if (!currentUser) {
     throw new Unauthorized
   }
@@ -124,4 +133,5 @@ export default {
   remove: removeAnArtist,
   edit: updateAnArtist,
   like: likeAnArtist,
+  genreIndex: showArtistsOfGenre,
 }

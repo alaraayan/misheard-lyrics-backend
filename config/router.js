@@ -24,6 +24,10 @@ router.route('/profile')
 router.route('/artists')
   .get(artists.index)
   .post(secureRoute, artists.create)
+//* Genre list routes
+router.route('/artists/:genre')
+  .get(artists.genreIndex)
+
 
 //* Detail routes
 router.route('/artists/:artistId')
