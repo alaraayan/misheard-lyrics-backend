@@ -15,12 +15,21 @@ router.route('/register')
 router.route('/login')
   .post(auth.login)
 
+//* User Profile
+router.route('/profile')
+  .get(secureRoute, auth.userProfile)
 
 // ! ARTIST ROUTES
 //* List routes
 router.route('/artists')
   .get(artists.index)
   .post(secureRoute, artists.create)
+
+//* Detail routes
+router.route('/artists/:artistId')
+  .get(artists.show)
+  
+
 
 
 export default router

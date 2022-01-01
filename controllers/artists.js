@@ -1,4 +1,4 @@
-import { AlreadyExists, Unauthorized } from '../lib/errors.js'
+import { AlreadyExists, NotFound, Unauthorized } from '../lib/errors.js'
 import Artist from '../models/artist.js'
 // import { NotFound, Unauthorized, AlreadyExists } from '../lib/errors.js'
 
@@ -40,8 +40,27 @@ async function addArtist(req, res, next) {
   }
 }
 
+//* SHOW A SINGLE ARTIST
+
+async function getAnArtist(req, res, next) {
+  const { artistId } = req.params
+  try {
+    const artistToShow = await Artist.findById(artistId)
+      .populate('addedBy')
+    
+    if (!artistToShow) {
+      throw new NotFound
+    }
+    return res.status(200).json(artistToShow)
+  } catch (err) {
+    next(err)
+  }
+}
+//* DELETE AN ARTIST
+//* DELETE AN ARTIST
 
 export default {
   index: artistIndex,
   create: addArtist,
+  show: getAnArtist,
 }
