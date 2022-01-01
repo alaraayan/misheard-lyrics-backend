@@ -2,6 +2,7 @@
 import express from 'express'
 import auth from '../controllers/auth.js'
 import artists from '../controllers/artists.js'
+import secureRoute from '../lib/secureRoute.js'
 
 const router = express.Router()
 
@@ -19,4 +20,7 @@ router.route('/login')
 //* List routes
 router.route('/artists')
   .get(artists.index)
+  .post(secureRoute, artists.create)
+
+
 export default router
