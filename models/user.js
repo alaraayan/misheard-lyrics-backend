@@ -11,6 +11,34 @@ const userSchema = new mongoose.Schema({
 })
 
 userSchema
+  .virtual('favoriteArtists', {
+    ref: 'Artist',
+    localField: '_id',
+    foreignField: 'likedBy',
+  })
+  .get(function(likedArtists) {
+    if (!likedArtists) return
+
+    return likedArtists.map(artist => {
+      return {
+        _id: artist.id,
+        name: artist.name,
+        images: artist.images,
+        genres: artist.genres,
+        spotifyId: artist.spotifyId,
+      }
+    })
+  })
+
+userSchema.set('toJSON', {
+  virtuals: true,
+  transform(_doc, json) {
+    delete json.password
+    return json
+  },
+})
+
+userSchema
   .virtual('passwordConfirmation')
   .set(function(passwordConfirmation) {
     this._passwordConfirmation = passwordConfirmation
